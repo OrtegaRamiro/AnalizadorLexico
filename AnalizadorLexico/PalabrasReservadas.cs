@@ -23,7 +23,7 @@ namespace AnalizadorLexico
             return "EQUIPO = Palabra reservada que muestra los integrantes del equipo.";
         }
 
-        public String Escribir() 
+        public String Escribir()
         {
             String p1 = "Escribir = Palabra reservada que imprime texto en pantalla.\n";
             return p1;
@@ -81,8 +81,44 @@ namespace AnalizadorLexico
             String p1 = "Estructura = Palabra reservada que indica el inicio de una estructura de variables para formar un registro\n";
             return p1;
         }
-        public String Compara(String Componente) {
-            String p1 =  "Compara = Palabra reservada que permite compara el contenido de dos variables o numeros\n"+AperPar;
+        public String INICIO()
+        {
+            String p1 = "INICIO = Palabra reservadaque abre e inicia un programa\n";
+            return p1;
+        }
+        public String FIN()
+        {
+            String p1 = "FIN = Palabra reservada que cierra o termina el programa.\n";
+            return p1;
+        }
+        public String Raiz()
+        {
+            String p1 = "Raiz = Palabra reservada para la operacion de raiz cuadrada.\n";
+            return p1;
+        }
+        public String Exponente()
+        {
+            String p1 = "Exponente = Palabra reservada que obtiene el exponente de un numero.\n";
+            return p1;
+        }
+        public String Crear()
+        {
+            String p1 = "Crear = Palabra reservada para crear un archivo.\n";
+            return p1;
+        }
+        public String Modifica()
+        {
+            String p1 = "Modifica = Palabra reservada para modificar un archivo creado anteriormente\n";
+            return p1;
+        }
+        public String Elimina()
+        {
+            String p1 = "Elimina = Palabra reservada para eliminar un archivo ya creado anteriormente.\n";
+            return p1;
+        }
+        public String Compara(String Componente)
+        {
+            String p1 = "Compara = Palabra reservada que permite compara el contenido de dos variables o numeros\n" + AperPar;
             return p1 + Componente;
         }
         public String Mientras(String Componente)
@@ -93,8 +129,9 @@ namespace AnalizadorLexico
             return p1 + Componente;
         }
 
-        public String Numeros(String txt) { 
-            return txt+" = Numero";
+        public String Numeros(String txt)
+        {
+            return txt + " = Numero";
         }
 
         public void Etiquetas()

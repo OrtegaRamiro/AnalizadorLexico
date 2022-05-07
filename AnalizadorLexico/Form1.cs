@@ -222,6 +222,19 @@ namespace AnalizadorLexico
 
                         }
                     }
+                    else
+                    {
+                        int indComp = txt.IndexOf("(") + 1;
+                        int finComp = txt.IndexOf(")");
+                        string Comp = txt.Substring(indComp, finComp - indComp);
+                        int ContIdeInterno = contIde;
+                        string compAux = analizar(Comp);
+                        if (compAux.Contains("Identificador"))
+                        {
+                            aux = aux + Comp + " = " + "Identificador " + ContIdeInterno + "\n";
+                            //contIde++;
+                        }
+                    }
                     if (txt.Contains(')'))
                     {
                         aux = aux + Ins.CerrPar;
@@ -280,7 +293,8 @@ namespace AnalizadorLexico
                 return Ins.Mientras(aux);
             }
             if (txt.Contains("Compara(") && txt.Contains(')'))
-            {
+            {                    
+                txt = txt.Trim();
                 int posParCerr = txt.IndexOf(")", 0);
                 List<String> lista = devCont(txt, "(", ")");
                 String aux = "";
@@ -307,8 +321,8 @@ namespace AnalizadorLexico
 
                     String texto = txt.Trim();
                     int IndiceLlaveSino = txt.IndexOf("Sino") + 3;
-                    char llaveape = txt[IndiceLlaveSino];
-
+                    char llaveape = txt[IndiceLlaveSino+1];
+                    //int IndiceLlaveFinalSino = txt.IndexOf("}");
                     if (txt[txt.IndexOf("Sino") + 4] == '{' && txt[txt.Length - 1] == '}')
                     {
                         if (txt.Contains("{") && txt.Contains("}"))
@@ -429,7 +443,7 @@ namespace AnalizadorLexico
                         {
                             if (item == ":")
                             {
-                                ListaAuxLlaves.Add(item + " = Simbolo para indicar todas las posiciones del vector.\n");
+                                ListaAuxLlaves.Add(item + " = Simbolo para indicar todas las posiciones del vector o hasta un punto especifico.\n");
                             }
                             else if (item == ",")
                             {
@@ -472,7 +486,7 @@ namespace AnalizadorLexico
                             int fin = item.IndexOf("[", inicio);
                             string Contenido = item.Substring(item.IndexOf(item[0]), fin - inicio);
 
-                            aux = aux + item + " = " + analizar(Contenido.ToString()) + "\n";
+                            aux = aux + Contenido + " = " + analizar(Contenido.ToString()) + "\n";
                             foreach (string itemCorch in ListaAuxLlaves)
                                 aux = aux + itemCorch;
                             break;
@@ -555,51 +569,59 @@ namespace AnalizadorLexico
             }
             if (txt.Contains("Cadena"))
             {
-                String aux = "";
-                List<String> ListaComponentes = txt.Split(Convert.ToChar(" ")).ToList<String>();
-                //aux = aux + Ins.Cadena();
-
-                foreach (string item in ListaComponentes)
+                if (txt.Contains("Estructura"))
                 {
-                    if (item == "Cadena")
-                    {
-                        aux = aux + Ins.Cadena();
-                    }
-                    else if (item == "=")
-                    {
-                        aux = aux + item + "=" + " Simbolo de igual a.\n";
-                    }
-                    else if (item.Contains("\""))
-                    {
-                        int inicio = item.IndexOf("\"");
-                        int fin = item.IndexOf((";"));
-                        string componente = item.Substring(inicio, fin - inicio);
 
-                        aux = aux + componente + " = " + "Cadena " + contCad + "\n";
-                        aux = aux + Ins.puntoComa + "\n";
-                        contCad++;
-                    }
-                    else
+                }
+                else
+                {
+                    String aux = "";
+                    List<String> ListaComponentes = txt.Split(Convert.ToChar(" ")).ToList<String>();
+                    //aux = aux + Ins.Cadena();
+
+                    foreach (string item in ListaComponentes)
                     {
-                        string itemaux;
-                        itemaux = analizar(item);
-                        if (itemaux == "Error lexico")
+                        if (item == "Cadena")
                         {
-                            aux = aux + item + " = " + "Error lexico\n";
+                            aux = aux + Ins.Cadena();
+                        }
+                        else if (item == "=")
+                        {
+                            aux = aux + item + "=" + " Simbolo de igual a.\n";
+                        }
+                        else if (item.Contains("\""))
+                        {
+                            int inicio = item.IndexOf("\"");
+                            int fin = item.IndexOf((";"));
+                            string componente = item.Substring(inicio, fin - inicio);
+
+                            aux = aux + componente + " = " + "Cadena " + contCad + "\n";
+                            aux = aux + Ins.puntoComa + "\n";
+                            contCad++;
                         }
                         else
                         {
-                            aux = aux + item + " = " + itemaux + "\n";
+                            string itemaux;
+                            itemaux = analizar(item);
+                            if (itemaux == "Error lexico")
+                            {
+                                aux = aux + item + " = " + "Error lexico\n";
+                            }
+                            else
+                            {
+                                aux = aux + item + " = " + itemaux + "\n";
+                            }
                         }
                     }
+                    return aux;
                 }
-                return aux;
             }
-            if (txt.Contains("SegunSea"))
+            if (txt.Contains("Segunsea"))
             {
                 String aux = "";
                 aux = aux + Ins.SegunSea();
                 string caso = "";
+                int numCaso = 1;
 
                 if (txt.Contains('('))
                 {
@@ -627,6 +649,7 @@ namespace AnalizadorLexico
                                 if (item == "Caso")
                                 {
                                     aux = aux + item + " = " + " Caso a utilizar ";
+                                    //numCaso++;
                                 }
                                 else if (item.Contains(":"))
                                 {
@@ -643,6 +666,7 @@ namespace AnalizadorLexico
                                 else if (item == "INS")
                                 {
                                     aux = aux + item + " = Instruccion " + contIns + "\n";
+                                    contIns++;
 
                                 }
                                 else if (item.Contains("Salir"))
@@ -652,8 +676,9 @@ namespace AnalizadorLexico
                                         int iniSalir = item.IndexOf(item[0]);
                                         int puntoComa = item.IndexOf(";");
                                         string dividir = item.Substring(iniSalir, puntoComa - iniSalir);
-                                        aux = aux + dividir + " = Salida de instruccion " + contIns + "\n";
-                                        contIns++;
+                                        aux = aux + dividir + " = Salida de caso " + numCaso + "\n";
+                                        numCaso++;
+                                        //contIns++;
                                         aux = aux + " ; = Fin del caso " + caso + "\n";
                                         if (item.Contains("}"))
                                             aux = aux + Ins.llaveCerr;
@@ -790,7 +815,7 @@ namespace AnalizadorLexico
                                 }
                                 else if (item == "Cadena")
                                 {
-                                    aux = aux  + Ins.Cadena();
+                                    aux = aux + Ins.Cadena();
                                 }
 
                                 else if (item[item.Length - 1].ToString() == ";")
@@ -802,11 +827,11 @@ namespace AnalizadorLexico
                                     itemaux = analizar(itemaux);
                                     if (itemaux.Contains("Identificador"))
                                     {
-                                        aux = aux + " = "+itemaux+"\n";
+                                        aux = aux + " = " + itemaux + "\n";
                                         //aux = aux + item + " = " + itemaux + "\n";
                                     }
                                     aux = aux + Ins.puntoComa + Ins.llaveCerr;
-                                    
+
                                 }
                             }
                         }
@@ -814,6 +839,264 @@ namespace AnalizadorLexico
                 }
                 return aux;
             }
+            if (txt.Contains("INICIO"))
+            {
+                String aux = "";
+                aux = aux + Ins.INICIO();
+                if (txt.Contains("{") && txt.Contains("}"))
+                {
+                    aux = aux + Ins.llaveApe;
+                    int IniComp = txt.IndexOf("{") + 1;
+                    int FinComp = txt.IndexOf("}");
+                    string Comp = txt.Substring(IniComp, FinComp - IniComp);
+                    List<String> ListaComponentes = Comp.Split(Convert.ToChar(" ")).ToList<String>();
+                    foreach (string item in ListaComponentes)
+                    {
+                        if (item == "INS")
+                        {
+                            aux = aux + item + "  = Instruccion " + contIns + "\n";
+                        }
+                    }
+                    aux = aux + Ins.llaveCerr;
+                }
+                if (txt.Contains("FIN"))
+                    aux = aux + Ins.FIN();
+                return aux;
+            }
+
+            if (txt.Contains("Raiz"))
+            {
+                String aux = "";
+                aux = aux + Ins.Raiz();
+                if (txt.Contains("(") && txt.Contains(")"))
+                {
+                    aux = aux + Ins.AperPar;
+
+                    int IniComp = txt.IndexOf("(") + 1;
+                    int FinComp = txt.IndexOf(",");
+                    string Comp = txt.Substring(IniComp, FinComp - IniComp);
+                    List<String> ListaComponentes = Comp.Split(Convert.ToChar(" ")).ToList<String>();
+
+                    foreach (string item in ListaComponentes)
+                    {
+                        string itemAux = item;
+                        itemAux = analizar(item);
+                        if (itemAux.Contains("Identificador"))
+                        {
+                            aux = aux + item + " = " + itemAux + "\n";
+                        }
+                        else if (itemAux.Contains("Numero"))
+                        {
+                            aux = aux + item + " = " + itemAux + "\n";
+                        }
+                    }
+
+                    aux = aux + Ins.coma;
+                    ListaComponentes.Clear();
+                    IniComp = txt.IndexOf(",") + 1;
+                    FinComp = txt.IndexOf(")");
+                    Comp = txt.Substring(IniComp, FinComp - IniComp);
+                    ListaComponentes = Comp.Split(Convert.ToChar(" ")).ToList<String>();
+                    foreach (string item in ListaComponentes)
+                    {
+                        string itemAux = item;
+                        itemAux = analizar(item);
+                        if (itemAux.Contains("Identificador"))
+                        {
+                            aux = aux + item + " = " + itemAux + "\n";
+                        }
+                        else if (itemAux.Contains("Numero"))
+                        {
+                            aux = aux + item + " = " + itemAux + "\n";
+                        }
+                    }
+                    aux = aux + Ins.CerrPar;
+                }
+                if (txt.Contains(";"))
+                {
+                    aux = aux + Ins.puntoComa;
+                }
+                return aux;
+            }
+            if (txt.Contains("Exponente"))
+            {
+                String aux = "";
+                aux = aux + Ins.Exponente();
+                if (txt.Contains("(") && txt.Contains(")"))
+                {
+                    aux = aux + Ins.AperPar;
+
+                    int IniComp = txt.IndexOf("(") + 1;
+                    int FinComp = txt.IndexOf(",");
+                    string Comp = txt.Substring(IniComp, FinComp - IniComp);
+                    List<String> ListaComponentes = Comp.Split(Convert.ToChar(" ")).ToList<String>();
+
+                    foreach (string item in ListaComponentes)
+                    {
+                        string itemAux = item;
+                        itemAux = analizar(item);
+                        if (itemAux.Contains("Identificador"))
+                        {
+                            aux = aux + item + " = " + itemAux + "\n";
+                        }
+                        else if (itemAux.Contains("Numero"))
+                        {
+                            aux = aux + item + " = " + itemAux + "\n";
+                        }
+                    }
+
+                    aux = aux + Ins.coma;
+                    ListaComponentes.Clear();
+                    IniComp = txt.IndexOf(",") + 1;
+                    FinComp = txt.IndexOf(")");
+                    Comp = txt.Substring(IniComp, FinComp - IniComp);
+                    ListaComponentes = Comp.Split(Convert.ToChar(" ")).ToList<String>();
+                    foreach (string item in ListaComponentes)
+                    {
+                        string itemAux = item;
+                        itemAux = analizar(item);
+                        if (itemAux.Contains("Identificador"))
+                        {
+                            aux = aux + item + " = " + itemAux + "\n";
+                        }
+                        else if (itemAux.Contains("Numero"))
+                        {
+                            aux = aux + item + " = " + itemAux + "\n";
+                        }
+                    }
+                    aux = aux + Ins.CerrPar;
+                }
+                if (txt.Contains(";"))
+                {
+                    aux = aux + Ins.puntoComa;
+                }
+                return aux;
+            }
+            if (txt.Contains("Crear"))
+            {
+                String aux = "";
+                aux = Ins.Crear();
+
+                if (txt.Contains("(") && txt.Contains(")"))
+                {
+                    aux = aux + Ins.AperPar;
+                    int IniComp = txt.IndexOf("(") + 1;
+                    int FinComp = txt.IndexOf(",");
+                    string Comp = txt.Substring(IniComp, FinComp - IniComp);
+
+                    if (Comp[0].ToString() == "\"" && Comp[Comp.Length - 1].ToString() == "\"")
+                    {
+                        aux = aux + Comp + " = Cadena " + contCad + "\n";
+                        contCad++;
+                    }
+                    aux = aux + Ins.coma;
+
+                    IniComp = txt.IndexOf(",") + 1;
+                    FinComp = txt.IndexOf(")");
+                    Comp = txt.Substring(IniComp, FinComp - IniComp);
+
+                    if (Comp[0].ToString() == "\"" && Comp[Comp.Length - 1].ToString() == "\"")
+                    {
+                        aux = aux + Comp + " = Cadena " + contCad + "\n";
+                        contCad++;
+                    }
+
+                    aux = aux + Ins.CerrPar;
+
+                }
+                if (txt.Contains(";"))
+                    aux = aux + Ins.puntoComa;
+
+                return aux;
+            }
+
+            if (txt.Contains("Modifica"))
+            {
+                String aux = "";
+                aux = aux + Ins.Modifica();
+
+                if (txt.Contains("(") && txt.Contains(")"))
+                {
+                    aux = aux + Ins.AperPar;
+                    int IniComp = txt.IndexOf("(") + 1;
+                    int FinComp = txt.IndexOf(",");
+                    string Comp = txt.Substring(IniComp, FinComp - IniComp);
+
+                    if (Comp[0].ToString() == "\"" && Comp[Comp.Length - 1].ToString() == "\"")
+                    {
+                        aux = aux + Comp + " = Cadena " + contCad + "\n";
+                        contCad++;
+                    }
+
+                    aux = aux + Ins.coma;
+
+                    IniComp = txt.IndexOf(",") + 1;
+                    FinComp = txt.LastIndexOf(",");
+                    Comp = txt.Substring(IniComp, FinComp - IniComp);
+
+                    if (Comp[0].ToString() == "\"" && Comp[Comp.Length - 1].ToString() == "\"")
+                    {
+                        aux = aux + Comp + " = Cadena " + contCad + "\n";
+                        contCad++;
+                    }
+
+                    aux = aux + Ins.coma;
+
+                    IniComp = txt.LastIndexOf(",") + 1;
+                    FinComp = txt.IndexOf(")");
+                    Comp = txt.Substring(IniComp, FinComp - IniComp);
+                    if (Comp[0].ToString() == "\"" && Comp[Comp.Length - 1].ToString() == "\"")
+                    {
+                        aux = aux + Comp + " = Cadena " + contCad + "\n";
+                        contCad++;
+                    }
+                    aux = aux + Ins.CerrPar;
+                }
+                if (txt.Contains(";"))
+                {
+                    aux = aux + Ins.puntoComa;
+                }
+                return aux;
+            }
+
+            if (txt.Contains("Elimina"))
+            {
+                String aux = "";
+                aux = Ins.Elimina();
+
+                if (txt.Contains("(") && txt.Contains(")"))
+                {
+                    aux = aux + Ins.AperPar;
+                    int IniComp = txt.IndexOf("(") + 1;
+                    int FinComp = txt.IndexOf(",");
+                    string Comp = txt.Substring(IniComp, FinComp - IniComp);
+
+                    if (Comp[0].ToString() == "\"" && Comp[Comp.Length - 1].ToString() == "\"")
+                    {
+                        aux = aux + Comp + " = Cadena " + contCad + "\n";
+                        contCad++;
+                    }
+                    aux = aux + Ins.coma;
+
+                    IniComp = txt.IndexOf(",") + 1;
+                    FinComp = txt.IndexOf(")");
+                    Comp = txt.Substring(IniComp, FinComp - IniComp);
+
+                    if (Comp[0].ToString() == "\"" && Comp[Comp.Length - 1].ToString() == "\"")
+                    {
+                        aux = aux + Comp + " = Cadena " + contCad + "\n";
+                        contCad++;
+                    }
+
+                    aux = aux + Ins.CerrPar;
+
+                }
+                if (txt.Contains(";"))
+                    aux = aux + Ins.puntoComa;
+
+                return aux;
+            }
+
             return "Error Lexico";
         }
 
@@ -840,6 +1123,7 @@ namespace AnalizadorLexico
             else if (txt.Contains("INS"))
             {
                 aux = aux + "INS = Instruccion " + contIns + "\n";
+                contIns++;
             }
 
             return aux;
@@ -924,6 +1208,17 @@ namespace AnalizadorLexico
 
         private void txtTextoAnalizar_TextChanged_1(object sender, EventArgs e)
         {
+        }
+
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            contNum = 1;
+            contIde = 1;
+            contIns = 1;
+            contCad = 1;
+            contVec = 1;
+            txtTextoAnalizar.Text = "";
+            lblprueba.Text = "";
         }
     }
 }

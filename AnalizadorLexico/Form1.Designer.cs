@@ -32,6 +32,7 @@ namespace AnalizadorLexico
             this.btnAnalizar = new System.Windows.Forms.Button();
             this.txtTextoAnalizar = new System.Windows.Forms.TextBox();
             this.lblprueba = new System.Windows.Forms.Label();
+            this.btnLimpiar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnAnalizar
@@ -40,7 +41,7 @@ namespace AnalizadorLexico
             this.btnAnalizar.Name = "btnAnalizar";
             this.btnAnalizar.Size = new System.Drawing.Size(75, 23);
             this.btnAnalizar.TabIndex = 0;
-            this.btnAnalizar.Text = "button1";
+            this.btnAnalizar.Text = "Analizar";
             this.btnAnalizar.UseVisualStyleBackColor = true;
             this.btnAnalizar.Click += new System.EventHandler(this.btnAnalizar_Click);
             // 
@@ -61,11 +62,22 @@ namespace AnalizadorLexico
             this.lblprueba.TabIndex = 3;
             this.lblprueba.Text = "label1";
             // 
+            // btnLimpiar
+            // 
+            this.btnLimpiar.Location = new System.Drawing.Point(476, 195);
+            this.btnLimpiar.Name = "btnLimpiar";
+            this.btnLimpiar.Size = new System.Drawing.Size(75, 23);
+            this.btnLimpiar.TabIndex = 4;
+            this.btnLimpiar.Text = "Limpiar";
+            this.btnLimpiar.UseVisualStyleBackColor = true;
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.lblprueba);
             this.Controls.Add(this.txtTextoAnalizar);
             this.Controls.Add(this.btnAnalizar);
@@ -81,6 +93,7 @@ namespace AnalizadorLexico
         private System.Windows.Forms.Button btnAnalizar;
         private System.Windows.Forms.TextBox txtTextoAnalizar;
         private System.Windows.Forms.Label lblprueba;
+        private System.Windows.Forms.Button btnLimpiar;
     }
 }
 
