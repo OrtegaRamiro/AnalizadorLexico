@@ -57,4 +57,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Garza Castillo Jonathan Eduardo
+González Padrón Ariel Francisco
+Campillo Gámez Christopher Jesús
+Martínez Segura Néstor Alejandro
+Ortega Lara Ramiro Silvestre
+Rangel Nava MIldred Casandra
+Ramos Zapata Ishla Guadalupe</value>
+  </data>
 </root>

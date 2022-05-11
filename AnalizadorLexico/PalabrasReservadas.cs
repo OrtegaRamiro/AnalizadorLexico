@@ -10,7 +10,9 @@ namespace AnalizadorLexico
     class PalabrasReservadas
     {
 
-
+        public string cadTextBoxAnalizar = "Teclea una instruccion para analizar.";
+        public string errorLexico = "Error Léxico";
+        public string instruccion = "Instrucción";
         public string AperPar = "( = Inicio de agrupación\n";
         public string CerrPar = ") = Fin de agrupación\n";
         public string puntoComa = "; = Fin de la instrucción\n";
@@ -18,9 +20,12 @@ namespace AnalizadorLexico
         public string llaveApe = "{ = Inicio de bloque de instrucciones\n";
         public string llaveCerr = " } = Fin de bloque de instrucciones\n";
         public string comillasdobles = "\" Comillas para texto\n";
+        public string cadRutaArchivo = "= Cadena de ruta de archivo\n";
+        public string cadNombreArchivo = "= Cadena de nombre de archivo\n";
+        public string cadContArchivo = "= Cadena de contenido de archivo\n";
         public String Equipo()
         {
-            return "EQUIPO = Palabra reservada que muestra los integrantes del equipo.";
+            return "EQUIPO = Palabra reservada que muestra los integrantes del equipo.\n";
         }
 
         public String Escribir()
@@ -118,7 +123,7 @@ namespace AnalizadorLexico
         }
         public String Compara(String Componente)
         {
-            String p1 = "Compara = Palabra reservada que permite compara el contenido de dos variables o numeros\n" + AperPar;
+            String p1 = "Compara = Palabra reservada que permite comparar el contenido de dos variables o números\n" + AperPar;
             return p1 + Componente;
         }
         public String Mientras(String Componente)
