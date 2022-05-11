@@ -87,7 +87,6 @@ namespace AnalizadorLexico
 
                 Ins.Numeros(txt);
                 String Numero = "Número " + txt;
-                //contNum += 1;
                 return Numero;
             }
             else if (Char.IsUpper(txt[0]))
@@ -127,6 +126,7 @@ namespace AnalizadorLexico
                 prueba = regex.Replace(Separar, @" ");
 
                 List<String> lista = prueba.Split(Convert.ToChar(" ")).ToList<String>();
+                List<String> ide = new List<String>();
 
                 List<String> Aux = new List<string>();
 
@@ -135,18 +135,19 @@ namespace AnalizadorLexico
                     lblprueba.Text = DevolverPalReservada(txtTextoAnalizar.Text);
                 }
                 else
+                {
                     foreach (String item in lista)
                     {
                         String Componente = item;
 
-                        if (Aux.Contains(Componente) && BuscaOpAr(item) == false && !int.TryParse(item, out int num))
+                        if (Aux.Contains(Componente))
                         {
-                            lblprueba.Text = lblprueba.Text + Componente + " = Error, identificador repetido.\n";
+                            int Ind = Aux.IndexOf(Componente);
+                            lblprueba.Text = lblprueba.Text + Componente + " = " + ide[Ind] + "\n";
                         }
                         else if (Char.IsUpper(Componente[0]))
                         {
                             lblprueba.Text = lblprueba.Text + DevolverPalReservada(Componente) + "\n";
-                            Aux.Add(Componente);
                         }
                         else if (item[item.Length - 1] == ';')
                         {
@@ -154,25 +155,37 @@ namespace AnalizadorLexico
                             if (auxCom.All(char.IsDigit))
                             {
                                 lblprueba.Text = lblprueba.Text + auxCom + " = " + analizar(auxCom) + "\n" + Ins.puntoComa;
-                                Aux.Add(auxCom);
-                                Aux.Add(";");
                             }
                             else if (auxCom.Contains("."))
                             {
                                 lblprueba.Text = lblprueba.Text + auxCom + " = " + analizar(auxCom) + "\n" + Ins.puntoComa;
-                                Aux.Add(auxCom);
-                                Aux.Add(";");
+                            }
+                            else
+                            {
+                                if (Aux.Contains(auxCom))
+                                {
+                                    int Ind = Aux.IndexOf(auxCom);
+                                    lblprueba.Text = lblprueba.Text + auxCom + " = " + ide[Ind] + "\n" + Ins.puntoComa;
+                                }
+                                else
+                                {
+                                    ide.Add(analizar(auxCom));
+                                    Aux.Add(auxCom);
+                                    lblprueba.Text = lblprueba.Text + auxCom + " = " + ide[contPal] + "\n" + Ins.puntoComa;
+                                    contPal++;
+                                }
+
                             }
                         }
                         else
                         {
-
-                            lblprueba.Text = lblprueba.Text + item + " = " + analizar(Componente) + "\n";
+                            ide.Add(analizar(Componente));
                             Aux.Add(Componente);
+                            lblprueba.Text = lblprueba.Text + item + " = " + ide[contPal] + "\n";
                             contPal++;
                         }
-
                     }
+                }
             }
         }
 
